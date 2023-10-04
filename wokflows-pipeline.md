@@ -87,9 +87,9 @@ Vamos adicionar dois `inputs`:
 - `os_version` : Para identificar o sistema operacional da pipeline
 - `image_name` : Para identificar o nome da imagem gerada pelo Docker
 
-Agora, adicione duas `secrets`
+Agora, adicione duas `secrets`:
 
-- `DOCKERHUB_USERNAME` : Usuásrio do Dockerhub
+- `DOCKERHUB_USERNAME` : Usuário do Dockerhub
 - `DOCKERHUB_TOKEN` : Token de acesso ao Dockerhub
 
 Então ficaria assim:
@@ -139,28 +139,22 @@ jobs:
 Explicando:
 
 `on.workflow_call.inputs.<input_id>.description`
-
-Uma descrição breve os o input.
+Uma descrição breve do input.
 
 `on.workflow_call.inputs.<input_id>.default`
-
 Valor definido como padrão, caso a propriedade não seja passada.
 
 `on.workflow_call.inputs.<input_id>.required`
-
-Define se a propriedade é obrigatória, caso defina uma valor default, esta pode ser `false`.<br />
+Define se a propriedade é obrigatória, caso defina uma valor `default`, esta pode ser `false`.<br />
 
 `on.workflow_call.inputs.<input_id>.type`
-
 Recebem os valores de `boolean`, `number` e `string`.
 
 `on.workflow_call.secrets.<secret_id>`
-
-Uma string para identificar um variável.
+Uma string para identificar uma variável.
 
 `on.workflow_call.secrets.<secret_id>.required`
-
-Valor booleano para definir a obrigatoriedade da propridade.
+Valor boleano para definir a obrigatoriedade da propridade.
 
 ## Ok, como faço para utilizar?
 
@@ -170,7 +164,7 @@ Vá em:
 `Settings > Actions > General > Access`
 
 Marque a opção e salve:
-`Accessible from repositories in the 'psoengenhariaeletrica' organization`
+`Accessible from repositories in the 'sua-organization' organization`
 
 ![Access Pipeline](https://github.com/jdgabriel/my-posts/blob/main/images/access_workflow.png?raw=true)
 
@@ -212,7 +206,7 @@ docker:
     DOCKERHUB_ORGANIZATION: ${{ secrets.DOCKERHUB_ORGANIZATION }}
 ```
 
-Na propriedade `uses` coloque a url da sua pipeline com a referência (**@ref**), que pode ser o nome da branch, uma tag ou uma hash do commit. Defina todos os `inputs da pipeline` na propriedade `with` e os `secrets` necessários na propriedade `secrets`. Agora sua pipeline está completa, bas executar.
+Na propriedade `uses` coloque a url da sua pipeline com a referência (**@ref**), que pode ser o nome da branch, uma tag ou uma hash do commit. Defina todos os `inputs` da pipeline na propriedade `with` e os `secrets` necessários na propriedade `secrets`. Agora sua pipeline está completa, basta executar.
 
 ## Conclusão
 
