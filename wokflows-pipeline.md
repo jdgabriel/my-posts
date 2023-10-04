@@ -1,3 +1,5 @@
+# Criando pipelines eficientes com Github Actions
+
 ## Introdução
 
 Com a evolução do código e da complexidade do repositório, é muito comum nas organizações a necessidade de criar pipelines para automatizar os fluxos das tarefas necessárias para manter a integração contínua e entrega contínua (CI/CD).
