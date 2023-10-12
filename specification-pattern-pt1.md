@@ -1,4 +1,4 @@
-# [Pt. 1] Melhorando sua lógica com Specification Pattern Introdução
+# [Pt. 1] Melhorando sua lógica com Specification Pattern
 
 ## Introdução
 
