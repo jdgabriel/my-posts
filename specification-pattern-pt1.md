@@ -7,8 +7,8 @@ Uma ótima alternativa é usar um pattern. Nesse post irei explicar como funcion
 
 Este post contem duas partes:
 
-- **[Pt. 1] Melhorando sua lógica com Spectation Pattern**
-- [Pt. 2] Melhorando sua lógica com Spectation Pattern (Em desenvolvimento)
+- **[Pt. 1] Melhorando sua lógica com Specification Pattern**
+- [Pt. 2] Melhorando sua lógica com Specification Pattern (Em desenvolvimento)
 
 ## O que é o Specification Pattern?
 
@@ -54,8 +54,9 @@ _(Não reflete a realidade, apenas um exemplo)_
 
 Escolha uma estrutura de pasta que melhor de adapta ao seu projeto. Para este exemplo, iremos adotar uma estrutura de pastas simples e objetiva para fins didáticos. E fica assim:
 
-```bash
+```sh
 # Estrutura inicial de pastas
+
 ├── src
 │   ├── patient
 │   ├── specification
@@ -69,7 +70,7 @@ Escolha uma estrutura de pasta que melhor de adapta ao seu projeto. Para este ex
 ##### Sintomas
 
 ```ts
-// src/patient/symptoms.enum.ts
+/* src/patient/symptoms.enum.ts */
 
 export enum SymptomsEnum {
   "FEBRE",
@@ -93,7 +94,7 @@ export type Symptom = keyof typeof SymptomsEnum;
 ##### Paciente
 
 ```ts
-// src/patient/patient.entity.ts
+/* src/patient/patient.entity.ts */
 
 export class Patient {
   public name: string;
@@ -106,14 +107,14 @@ export class Patient {
 }
 ```
 
-#### Criando a interface Specification
+#### Criando a interface para Specification
 
-Dentro da pasta `specification` crie um arquivo que irá conter a interface que iremos utilizar durante todo o exemplo.
+Dentro da pasta `specification`, crie um arquivo que irá conter a interface que iremos utilizar durante todo o exemplo.
 
 > Você também pode criá-la como classe abstrata
 
 ```ts
-// src/specification/specification.interface.ts
+/* src/specification/specification.interface.ts */
 
 export interface ISpecification<T> {
   isSatisfiedBy(target: T): boolean;
@@ -122,18 +123,31 @@ export interface ISpecification<T> {
 
 Criamos uma interface que possui apenas uma função, que recebe um `target` e retorna um `boolean`, apenas.
 
-#### Sua primeira especificação
+#### Criando a classe Specification
+
+Ainda na pasta `specification`, crie uma classe abstrata que agirá como contrato para as classes que à estender.
+
+```ts
+/* src/specification/specification.class.ts */
+import { ISpecification } from "./interfaces/specification.interface";
+
+export abstract class Specification<T> implements ISpecification<T> {
+  abstract isSatisfiedBy(target: T): boolean;
+}
+```
+
+## Regras de negócio
 
 Na pasta `patient` crie um arquivo de especificações: `patient.specification.ts`
 
-### _O paciente deve possuir todos os sintomas comuns_
+### O paciente deve possuir todos os sintomas comuns
 
 O código ficaria assim:
 
 ```ts
-// src/patient/patient.specification.ts
+/* src/patient/patient.specification.ts */
 
-import { Specification } from "../specification/specification.interface";
+import { Specification } from "../specification/specification.class";
 import { Patient } from "./patient.entity";
 import { Symptom } from "./symptoms.enum";
 
@@ -160,7 +174,7 @@ Assim aplicamos nosso primeira regra de negócio através do `Specification Patt
   
 - Importação necessárias
 ```ts
-import { Specification } from "../specification/specification.interface";
+import { Specification } from "../specification/specification.class";
 import { Patient } from "./patient.entity";
 import { Symptom } from "./symptoms.enum";
 ```
@@ -194,8 +208,8 @@ isSatisfiedBy(patient: Patient): boolean {
 </details>
     
 <details>
-    <summary>Como usar a especificação</summary> 
-    
+    <summary>Como usar a especificação</summary>
+
 ```ts
 const patient = new Patient({
   name: "Jhon Doe",
@@ -204,22 +218,22 @@ const patient = new Patient({
 
 const hasAllCommonsSymptoms = HasAllCommonSymptomsSpecification.isSatisfiedBy(patient);
 
-if(hasAllCommonsSymptoms){
-// Sua lógica
+if (hasAllCommonsSymptoms) {
+  // Sua lógica
 }
+```
 
-````
 </details>
 <hr/>
 
-### *O paciente deve possuir pelo menos um dos sintomas menos comum*
+### O paciente deve possuir pelo menos um dos sintomas menos comum
 
 O código ficaria assim:
 
 ```ts
-// src/patient/patient.specification.ts
+/* src/patient/patient.specification.ts */
 
-import { Specification } from "../specification/specification.interface";
+import { Specification } from "../specification/specification.class";
 import { Patient } from "./patient.entity";
 import { Symptom } from "./symptoms.enum";
 
@@ -236,12 +250,10 @@ export class HasSomeLessCommonSymptomsSpecification extends Specification<Patien
 
   isSatisfiedBy(patient: Patient): boolean {
     const symptoms = patient.symptoms;
-    return symptoms.map((symptom) =>
-        this.SYMPTOM_CRITERIAL.includes(symptom)
-    ).includes(true);
+    return symptoms.map((symptom) => this.SYMPTOM_CRITERIAL.includes(symptom)).includes(true);
   }
 }
-````
+```
 
 Definimos que se o paciente conter pelo menos um dos sintomas menos comuns, ele atenderá a especificação `HasSomeLessCommonSymptomsSpecification`
 
@@ -250,7 +262,7 @@ Definimos que se o paciente conter pelo menos um dos sintomas menos comuns, ele 
   
 - Importação necessárias
 ```ts
-import { Specification } from "../specification/specification.interface";
+import { Specification } from "../specification/specification.class";
 import { Patient } from "./patient.entity";
 import { Symptom } from "./symptoms.enum";
 ```
@@ -263,32 +275,32 @@ export class HasSomeLessCommonSymptomsSpecification extends Specification<Patien
 - Definição das variáveis para os critérios da especificação
 
 ```ts
-  private readonly SYMPTOM_CRITERIAL: Symptom[] = [
-    "DORES",
-    "DOR_DE_GARGANTA",
-    "DIARREIRA",
-    "CONJUNTIVITE",
-    "DOR_DE_CABECA",
-    "PERDA_DO_PALADAR",
-    "ERUPCAO_CULTANE",
-  ];
+private readonly SYMPTOM_CRITERIAL: Symptom[] = [
+  "DORES",
+  "DOR_DE_GARGANTA",
+  "DIARREIRA",
+  "CONJUNTIVITE",
+  "DOR_DE_CABECA",
+  "PERDA_DO_PALADAR",
+  "ERUPCAO_CULTANE",
+];
 ```
 
 - Método que define se a especificação foi atendida
 
 ```ts
-  isSatisfiedBy(patient: Patient): boolean {
-    const symptoms = patient.symptoms;
-    return symptoms.map((symptom) =>
-        this.SYMPTOM_CRITERIAL.includes(symptom)
-    ).includes(true);
-  }
+isSatisfiedBy(patient: Patient): boolean {
+  const symptoms = patient.symptoms;
+  return symptoms.map((symptom) =>
+      this.SYMPTOM_CRITERIAL.includes(symptom)
+  ).includes(true);
+}
 ```
 
 </details>
     
 <details>
-    <summary>Como usar a especificação</summary> 
+<summary>Como usar a especificação</summary> 
     
 ```ts
 const patient = new Patient({
@@ -296,24 +308,27 @@ const patient = new Patient({
   symptoms: ["DOR_DE_CABECA"],
 });
 
-const hasSomeLessCommonSymptom = HasSomeLessCommonSymptomsSpecification.isSatisfiedBy(patient);
+const hasSomeLessCommonSymptom =
+HasSomeLessCommonSymptomsSpecification.isSatisfiedBy(patient);
 
 if(hasSomeLessCommonSymptom){
 // Sua lógica
 }
 
 ````
+
 </details>
+
 <hr/>
 
-### *O paciente deve possuir pelo menos um sintoma crítico*
+### O paciente deve possuir pelo menos um sintoma crítico
 
 O código ficaria assim:
 
 ```ts
-// src/patient/patient.specification.ts
+/* src/patient/patient.specification.ts */
 
-import { Specification } from "../specification/specification.interface";
+import { Specification } from "../specification/specification.class";
 import { Patient } from "./patient.entity";
 import { Symptom } from "./symptoms.enum";
 
@@ -321,7 +336,7 @@ export class HasSomeSeriousSymptomsSpecification extends Specification<Patient> 
   private readonly SYMPTOM_CRITERIAL: Symptom[] = [
     "DIFICULDADE_DE_RESPIRAR",
     "DOR_NO_PEITO",
-    "PERDA_DE_FALA"
+    "PERDA_DE_FALA",
   ];
 
   isSatisfiedBy(patient: Patient): boolean {
@@ -339,47 +354,49 @@ Definimos que se o paciente conter pelo menos um dos sintomas críticos, ele ate
 <summary>Detalhes da especificação</summary>
   
 - Importação necessárias
+
 ```ts
-import { Specification } from "../specification/specification.interface";
+import { Specification } from "../specification/specification.class";
 import { Patient } from "./patient.entity";
 import { Symptom } from "./symptoms.enum";
 ```
+
 - Classe estendida de `Specification` interface que criamos, atribuindo o generic `Patient`
-    
+
 ```ts
 export class HasSomeSeriousSymptomsSpecification extends Specification<Patient>
 ```
-    
+
 - Definição das variáveis para os critérios da especificação
 
 ```ts
-  private readonly SYMPTOM_CRITERIAL: Symptom[] = [
-    "DIFICULDADE_DE_RESPIRAR",
-    "DOR_NO_PEITO",
-    "PERDA_DE_FALA"
-  ];
+private readonly SYMPTOM_CRITERIAL: Symptom[] = [
+  "DIFICULDADE_DE_RESPIRAR",
+  "DOR_NO_PEITO",
+  "PERDA_DE_FALA"
+];
 ```
 
 - Método que define se a especificação foi atendida
 
 ```ts
-  isSatisfiedBy(patient: Patient): boolean {
-    const symptoms = patient.symptoms;
-    return symptoms.map((symptom) =>
-        this.SYMPTOM_CRITERIAL.includes(symptom)
-    ).includes(true);
-  }
+isSatisfiedBy(patient: Patient): boolean {
+  const symptoms = patient.symptoms;
+  return symptoms.map((symptom) =>
+      this.SYMPTOM_CRITERIAL.includes(symptom)
+  ).includes(true);
+}
 ```
 
 </details>
-    
+
 <details>
-    <summary>Como usar a especificação</summary> 
+<summary>Como usar a especificação</summary> 
     
 ```ts
 const patient = new Patient({
   name: "Jhon Doe",
-  symptoms: ["DOR_NO_PEITO"],
+  symptoms: ["DOR_NO_PEITO"]
 });
 
 const hasSomeSeriousCommonSymptom =
@@ -391,13 +408,11 @@ if(hasSomeSeriousCommonSymptom){
 
 ```
 </details>
-
 <hr />
 
 Com as especificações básicas do paciente criadas, agora podemos combinar as especificações para que as regras de negócio mais complexas sejam atendidas.
 
-### **Continuamos na parte dois...**
+### Continuamos na parte dois...
+
 Iremos criar o restante das regras de negócio e criar testes automatizados para certificar que todas as regras estão sendo atendidas.
-
-
 ```
