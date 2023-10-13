@@ -8,7 +8,7 @@ Uma ótima alternativa é usar um pattern. Nesse post irei explicar como funcion
 Este post contem duas partes:
 
 - **[Pt. 1] Melhorando sua lógica com Specification Pattern**
-- [Pt. 2] Melhorando sua lógica com Specification Pattern (Em desenvolvimento)
+- [[Pt. 2] Melhorando sua lógica com Specification Pattern](https://www.tabnews.com.br/jdgabriel/pt-2-melhorando-sua-logica-com-specification-pattern)
 
 ## O que é o Specification Pattern?
 
@@ -45,10 +45,15 @@ _(Não reflete a realidade, apenas um exemplo)_
 #### Especificação do Paciente
 
 - **Precisa de UTI**
-  O paciente precisa atender **todos os requisitos**. Lógica: **AND** - Possui todos os sintomas comuns - Possui pelo menos um sintoma crítico
+  O paciente precisa atender **todos os requisitos**. Lógica: **AND**
+
+  - Possui todos os sintomas comuns
+  - Possui pelo menos um sintoma crítico
 
 - **Precisa de avaliação médica**
-  O paciente precisa atender **um dos requisitos**. Lógica: **OR** - Possui todos os sintomas comuns - Possui todos os sintomas menos comuns - Possui pelo menos um sintoma crítico
+  O paciente precisa atender **um dos requisitos**. Lógica: **OR**
+  - Possui todos os sintomas comuns
+  - Possui todos os sintomas menos comuns - Possui pelo menos um sintoma crítico
 
 ### Mão no código
 
@@ -414,5 +419,5 @@ Com as especificações básicas do paciente criadas, agora podemos combinar as 
 
 ### Continuamos na parte dois...
 
-Iremos criar o restante das regras de negócio e criar testes automatizados para certificar que todas as regras estão sendo atendidas.
+Iremos criar o restante das regras de negócio.
 ```
